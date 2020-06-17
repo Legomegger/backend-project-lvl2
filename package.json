@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "NODE_ENV=production babel src --out-dir dist --source-maps inline",
     "prepublishOnly": "npm run build",
-    "babel-node": "babel-node"
+    "babel-node": "babel-node",
+    "eslint": "eslint"
   },
   "bin": {
     "gendiff": "dist/bin/gendiff.js"
