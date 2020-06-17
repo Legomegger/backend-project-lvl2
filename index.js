@@ -1,3 +1,3 @@
-import help from './src/help';
+import help from './src/help.js';
 
 export default help;
