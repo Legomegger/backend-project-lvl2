@@ -1,0 +1,37 @@
+{
+  "name": "coolcatgendiff",
+  "version": "0.0.1",
+  "description": "hexlet project lvl 2",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "NODE_ENV=production babel src --out-dir dist --source-maps inline",
+    "prepublishOnly": "npm run build",
+    "babel-node": "babel-node"
+  },
+  "bin": {
+    "gendiff": "dist/bin/gendiff.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Legomegger/backend-project-lvl2.git"
+  },
+  "author": "coolcat",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Legomegger/backend-project-lvl2/issues"
+  },
+  "homepage": "https://github.com/Legomegger/backend-project-lvl2#readme",
+  "dependencies": {
+    "eslint": "^7.2.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "@babel/cli": "^7.10.1",
+    "@babel/core": "^7.10.2",
+    "@babel/node": "^7.10.1",
+    "@babel/preset-env": "^7.10.2"
+  }
+}
