@@ -1,3 +1,3 @@
-import help from './src/help.js';
+import gendiff from './src/gendiff.js';
 
-export default help;
+export default gendiff;
