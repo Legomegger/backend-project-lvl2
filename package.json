@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "npx -n --experimental-vm-modules jest",
+    "testw": "npx -n --experimental-vm-modules jest --watch",
     "eslint": "eslint"
   },
   "engines": {
@@ -30,7 +31,8 @@
   "homepage": "https://github.com/Legomegger/backend-project-lvl2#readme",
   "dependencies": {
     "@jest/globals": "^26.0.1",
-    "commander": "^5.1.0"
+    "commander": "^5.1.0",
+    "lodash": "^4.17.15"
   },
   "files": [
     "dist"
@@ -40,7 +42,6 @@
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.21.2",
     "eslint-plugin-jest": "^23.13.2",
-    "jest": "^26.0.1",
-    "lodash": "^4.17.15"
+    "jest": "^26.0.1"
   }
 }
