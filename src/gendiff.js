@@ -1,23 +1,10 @@
-import fs from 'fs';
-import path from 'path';
 import _ from 'lodash';
 
 const prettifyResultList = (list) => list.map((element, index) => (index === 0 ? element : ` ${element}`));
 
-const relativePath = (filepath) => !filepath.includes(path.resolve());
-const getFileName = (filepath) => filepath.split('/')[filepath.split('/').length - 1];
-
-const normalizePath = (filepath) => {
-  if (relativePath(filepath)) {
-    const fileName = getFileName(filepath);
-    return `${path.resolve()}/${fileName}`;
-  }
-  return filepath;
-};
-
 export default (fileA, fileB) => {
-  const fileAJson = JSON.parse(fs.readFileSync(normalizePath(fileA), 'utf-8'));
-  const fileBJson = JSON.parse(fs.readFileSync(normalizePath(fileB), 'utf-8'));
+  const fileAJson = JSON.parse(fileA);
+  const fileBJson = JSON.parse(fileB);
   const fileAKeys = Object.keys(fileAJson);
   const fileBKeys = Object.keys(fileBJson);
 
