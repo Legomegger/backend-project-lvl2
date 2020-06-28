@@ -8,9 +8,9 @@ const { program } = pkg;
 program
   .version('0.0.1')
   .description('Compares two configuration files and shows a difference')
-  .option('-f, --format <type>', 'output format')
-  .arguments('<first> <second>')
-  .action((first, second) => {
-    main(first, second);
+  .option('-f, --format [type]', 'output format')
+  .arguments('<filepath1> <filepath2>')
+  .action((filepath1, filepath2) => {
+    console.log(JSON.stringify(main(filepath1, filepath2)));
   })
   .parse(process.argv);
