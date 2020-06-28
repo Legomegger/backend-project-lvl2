@@ -25,6 +25,6 @@ program
   .action((filepath1, filepath2) => {
     const fileA = fs.readFileSync(normalizePath(filepath1), 'utf-8');
     const fileB = fs.readFileSync(normalizePath(filepath2), 'utf-8');
-    console.log(JSON.stringify(main(fileA, fileB)));
+    console.log(main(fileA, fileB));
   })
   .parse(process.argv);
