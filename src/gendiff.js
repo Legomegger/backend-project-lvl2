@@ -1,10 +1,11 @@
 import _ from 'lodash';
 import path from 'path';
-import { parseJson, parseYml } from './parsers.js';
+import { parseJson, parseYml, parseIni } from './parsers.js';
 
 const prettifyResultList = (list) => list.map((element, index) => (index === 0 ? element : ` ${element}`));
 
 const getFileExtension = (filename) => path.extname(filename);
+const isIni = (extension) => extension.split('.')[1] === 'ini';
 const isJson = (extension) => extension.split('.')[1] === 'json';
 const isYml = (extension) => extension.split('.')[1] === 'yml' || extension.split('.')[1] === 'yaml';
 const makeDiff = (objectA, objectB) => {
@@ -41,6 +42,9 @@ export default (filepath1, filepath2) => {
     return makeDiff(objectA, objectB);
   } if (isYml(fileTypeA)) {
     const [objectA, objectB] = parseYml(filepath1, filepath2);
+    return makeDiff(objectA, objectB);
+  } if (isIni(fileTypeA)) {
+    const [objectA, objectB] = parseIni(filepath1, filepath2);
     return makeDiff(objectA, objectB);
   }
   return 'Error';

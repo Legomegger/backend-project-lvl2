@@ -1,5 +1,6 @@
 import fs from 'fs';
 import YAML from 'yaml';
+import ini from 'ini';
 
 const getFileContents = (filepath1, filepath2) => {
   const fileA = fs.readFileSync(filepath1, 'utf-8');
@@ -13,4 +14,8 @@ export const parseJson = (filepath1, filepath2) => {
 export const parseYml = (filepath1, filepath2) => {
   const [objectA, objectB] = getFileContents(filepath1, filepath2);
   return [YAML.parse(objectA), YAML.parse(objectB)];
+};
+export const parseIni = (filepath1, filepath2) => {
+  const [objectA, objectB] = getFileContents(filepath1, filepath2);
+  return [ini.parse(objectA), ini.parse(objectB)];
 };
