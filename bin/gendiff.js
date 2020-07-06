@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-import fs from 'fs';
 import path from 'path';
 import pkg from 'commander';
 import main from '../index.js';
@@ -23,8 +22,8 @@ program
   .option('-f, --format [type]', 'output format')
   .arguments('<filepath1> <filepath2>')
   .action((filepath1, filepath2) => {
-    const fileA = fs.readFileSync(normalizePath(filepath1), 'utf-8');
-    const fileB = fs.readFileSync(normalizePath(filepath2), 'utf-8');
+    const fileA = normalizePath(filepath1);
+    const fileB = normalizePath(filepath2);
     console.log(main(fileA, fileB));
   })
   .parse(process.argv);
