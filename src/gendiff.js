@@ -49,37 +49,40 @@ const makeDiff = (objectA, objectB) => {
   return [...removed, ...added, ...unchanged, ...changed, ...nested];
 };
 
-const indent = (by = 2, spacer = ' ') => spacer.repeat(by);
+const printObject = (object, indentation = 2, spacer = ' ') => Object.entries(object).reduce((acc, [key, value]) => {
+  if (_.isObject(value)) {
+    return acc.concat(`${spacer.repeat(indentation + 2)}${key}: {\n${printObject(value, indentation + 4)}${spacer.repeat(indentation + 2)}}\n`);
+  }
+  return acc.concat(`${spacer.repeat(indentation + 2)}${key}: ${value}\n`);
+}, '');
 
-const printObject = (object, indentation = 2, spacer = ' ') => {
-  return Object.entries(object).reduce((acc, [key, value]) => {
-    return acc.concat(`${spacer.repeat(indentation + 6)}${key}: ${_.isObject(value) ? `{ \n${printObject(value, indentation + 4)}${spacer.repeat(indentation + 6)}}\n${spacer.repeat(indentation + 2)}}` : value}\n`);
-  }, '');
-};
-
-const format = (diffObject) => {
-  return diffObject.reduce((acc, e) => {
+const stylish = (diff, ind) => {
+  const indent = () => {
+    const space = ' ';
+    return space.repeat(ind);
+  };
+  return diff.reduce((acc, e) => {
     if (e.type === 'removed') {
       if (_.isObject(e.value)) {
-        return acc.concat(`${indent()}- ${e.key}: {\n${printObject(e.value)}${indent()}\n`);
+        return acc.concat(`${indent()}- ${e.key}: {\n${printObject(e.value, ind + 4)}${indent()}  }\n`);
       }
       return acc.concat(`${indent()}- ${e.key}: ${e.value}\n`);
     }
     if (e.type === 'added') {
       if (_.isObject(e.value)) {
-        return acc.concat(`${indent()}+ ${e.key}: {\n${printObject(e.value)}${indent()}\n`);
+        return acc.concat(`${indent()}+ ${e.key}: {\n${printObject(e.value, ind + 4)}${indent()}  }\n`);
       }
       return acc.concat(`${indent()}+ ${e.key}: ${e.value}\n`);
     }
     if (e.type === 'unchanged') {
       if (_.isObject(e.value)) {
-        return acc.concat(`${indent()}  ${e.key}: {\n ${printObject(e.value)}}\n`);
+        return acc.concat(`${indent()}  ${e.key}: {\n ${printObject(e.value, ind + 4)}}\n`);
       }
       return acc.concat(`${indent()}  ${e.key}: ${e.value}\n`);
     }
     if (e.type === 'changed') {
       if (_.isObject(e.beforeValue) && _.isObject(e.afterValue)) {
-        return acc.concat(`${indent()}- ${e.key}: {\n ${printObject(e.beforeValue)}}\n${indent()}+ ${e.key}: {\n ${printObject(e.afterValue)}}\n`);
+        return acc.concat(`${indent()}- ${e.key}: {\n${printObject(e.beforeValue, ind + 4)}}\n${indent()}+ ${e.key}: {\n${printObject(e.afterValue, ind + 4)}}\n`);
       }
 
       if (!_.isObject(e.beforeValue) && !_.isObject(e.afterValue)) {
@@ -87,15 +90,15 @@ const format = (diffObject) => {
       }
 
       if (!_.isObject(e.beforeValue) && _.isObject(e.afterValue)) {
-        return acc.concat(`${indent()}- ${e.key}: ${e.beforeValue}\n${indent()}+ ${e.key}: {\n${printObject(e.afterValue)}${indent()}  }\n`);
+        return acc.concat(`${indent()}- ${e.key}: ${e.beforeValue}\n${indent()}+ ${e.key}: {\n${printObject(e.afterValue, ind + 4)}${indent()}  }\n`);
       }
 
       if (_.isObject(e.beforeValue) && !_.isObject(e.afterValue)) {
-        return acc.concat(`${indent()}- ${e.key}: {\n ${indent(4)}${printObject(e.beforeValue)}  }\n${indent()}+ ${e.key}: ${e.afterValue}\n`);
+        return acc.concat(`${indent()}- ${e.key}: {\n${printObject(e.beforeValue, ind + 4)}${indent()}  }\n${indent()}+ ${e.key}: ${e.afterValue}\n`);
       }
     }
     if (e.type === 'nested') {
-      return acc.concat(`${indent()}  ${e.key}: {\n${format(e.children[0])}}\n`)
+      return acc.concat(`${indent()}  ${e.key}: {\n${stylish(e.children[0], ind + 4)}${indent()}  }\n`);
     }
     return acc;
   }, '');
@@ -109,13 +112,13 @@ export default (filepath1, filepath2) => {
 
   if (isJson(fileTypeA)) {
     const [objectA, objectB] = parseJson(filepath1, filepath2);
-    return `{\n ${format(makeDiff(objectA, objectB))}\n}`;
+    return `{\n${stylish(makeDiff(objectA, objectB), 2)}}`;
   } if (isYml(fileTypeA)) {
     const [objectA, objectB] = parseYml(filepath1, filepath2);
-    return makeDiff(objectA, objectB);
+    return `{\n${stylish(makeDiff(objectA, objectB), 2)}}`;
   } if (isIni(fileTypeA)) {
     const [objectA, objectB] = parseIni(filepath1, filepath2);
-    return makeDiff(objectA, objectB);
+    return `{\n${stylish(makeDiff(objectA, objectB), 2)}}`;
   }
   return 'Error';
 };
