@@ -24,6 +24,6 @@ program
   .action((filepath1, filepath2) => {
     const fileA = normalizePath(filepath1);
     const fileB = normalizePath(filepath2);
-    console.log(main(fileA, fileB));
+    console.log(main(fileA, fileB, program.format));
   })
   .parse(process.argv);
