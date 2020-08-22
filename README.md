@@ -5,9 +5,5 @@
 
 working example
 
-yml
- https://asciinema.org/a/R2MylbLwd1pjfi1mZuCfqaBeE
-
-ini
- https://asciinema.org/a/9uAZs1BLPUbvHwW22lfyy4lIw
+ https://asciinema.org/a/mURZc7vHrvYxvqRXI3Nou7FGI
 

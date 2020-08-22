@@ -3,7 +3,7 @@ import plain from './plain.js';
 
 const types = {
   stylish: (diff) => `{\n${stylish(diff, 2)}}`,
-  plain: (diff) => plain(diff),
+  plain: (diff) => plain(diff).trim(),
 };
 
 const format = (diff, type) => types[type](diff);
