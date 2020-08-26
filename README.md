@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/Legomegger/backend-project-lvl2.svg?branch=master)](https://travis-ci.org/Legomegger/backend-project-lvl2)
 [![Maintainability](https://api.codeclimate.com/v1/badges/76688c851dc130536551/maintainability)](https://codeclimate.com/github/Legomegger/backend-project-lvl2/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/76688c851dc130536551/test_coverage)](https://codeclimate.com/github/Legomegger/backend-project-lvl2/test_coverage)
+![Node CI](https://github.com/Legomegger/backend-project-lvl2/workflows/Node%20CI/badge.svg)
 
 working example
 
