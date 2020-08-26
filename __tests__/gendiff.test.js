@@ -49,3 +49,26 @@ test('Testing plain inis - format plain', () => {
   const res = fs.readFileSync(path.join(dirname, './__tests__/__fixtures__/plain.txt'), 'utf-8').trim();
   expect(gendiff(before, after, 'plain')).toBe(res);
 });
+test('Testing plain jsons - format json', () => {
+  const dirname = path.resolve();
+  const before = path.join(dirname, './__tests__/__fixtures__/before.json');
+  const after = path.join(dirname, './__tests__/__fixtures__/after.json');
+  const res = fs.readFileSync(path.join(dirname, './__tests__/__fixtures__/json.txt'), 'utf-8').trim();
+  expect(gendiff(before, after, 'json')).toBe(res);
+});
+
+test('Testing plain ymls - format json', () => {
+  const dirname = path.resolve();
+  const before = path.join(dirname, './__tests__/__fixtures__/before.yml');
+  const after = path.join(dirname, './__tests__/__fixtures__/after.yml');
+  const res = fs.readFileSync(path.join(dirname, './__tests__/__fixtures__/json.txt'), 'utf-8').trim();
+  expect(gendiff(before, after, 'json')).toBe(res);
+});
+
+test('Testing plain inis - format json', () => {
+  const dirname = path.resolve();
+  const before = path.join(dirname, './__tests__/__fixtures__/before.ini');
+  const after = path.join(dirname, './__tests__/__fixtures__/after.ini');
+  const res = fs.readFileSync(path.join(dirname, './__tests__/__fixtures__/json.txt'), 'utf-8').trim();
+  expect(gendiff(before, after, 'json')).toBe(res);
+});
