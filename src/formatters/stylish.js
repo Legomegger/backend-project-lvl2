@@ -12,45 +12,43 @@ const printObject = (object, indentation = 2, spacer = ' ') => {
   }, '');
 };
 
+const displayResult = (node, indentation, symbol) => {
+  if (_.isObject(node.value)) {
+    return `${space.repeat(indentation)}${symbol} ${node.key}: {\n${printObject(node.value, indentation + 4)}${space.repeat(indentation)}  }\n`;
+  }
+  return `${space.repeat(indentation)}${symbol} ${node.key}: ${node.value}\n`;
+};
+
 const stylish = (diff, ind) => {
-  const result = diff.reduce((acc, e) => {
-    if (e.type === 'removed') {
-      if (_.isObject(e.value)) {
-        return acc.concat(`${space.repeat(ind)}- ${e.key}: {\n${printObject(e.value, ind + 4)}${space.repeat(ind)}  }\n`);
-      }
-      return acc.concat(`${space.repeat(ind)}- ${e.key}: ${e.value}\n`);
+  const result = diff.reduce((acc, node) => {
+    if (node.type === 'removed') {
+      return acc.concat(displayResult(node, ind, '-'));
     }
-    if (e.type === 'added') {
-      if (_.isObject(e.value)) {
-        return acc.concat(`${space.repeat(ind)}+ ${e.key}: {\n${printObject(e.value, ind + 4)}${space.repeat(ind)}  }\n`);
-      }
-      return acc.concat(`${space.repeat(ind)}+ ${e.key}: ${e.value}\n`);
+    if (node.type === 'added') {
+      return acc.concat(displayResult(node, ind, '+'));
     }
-    if (e.type === 'unchanged') {
-      if (_.isObject(e.value)) {
-        return acc.concat(`${space.repeat(ind)}  ${e.key}: {\n ${printObject(e.value, ind + 4)}}\n`);
-      }
-      return acc.concat(`${space.repeat(ind)}  ${e.key}: ${e.value}\n`);
+    if (node.type === 'unchanged') {
+      return acc.concat(displayResult(node, ind, ' '));
     }
-    if (e.type === 'changed') {
-      if (_.isObject(e.beforeValue) && _.isObject(e.afterValue)) {
-        return acc.concat(`${space.repeat(ind)}- ${e.key}: {\n${printObject(e.beforeValue, ind + 4)}}\n${space.repeat(ind)}+ ${e.key}: {\n${printObject(e.afterValue, ind + 4)}}\n`);
+    if (node.type === 'changed') {
+      if (_.isObject(node.beforeValue) && _.isObject(node.afterValue)) {
+        return acc.concat(`${space.repeat(ind)}- ${node.key}: {\n${printObject(node.beforeValue, ind + 4)}}\n${space.repeat(ind)}+ ${node.key}: {\n${printObject(node.afterValue, ind + 4)}}\n`);
       }
 
-      if (!_.isObject(e.beforeValue) && !_.isObject(e.afterValue)) {
-        return acc.concat(`${space.repeat(ind)}- ${e.key}: ${e.beforeValue}\n${space.repeat(ind)}+ ${e.key}: ${e.afterValue}\n`);
+      if (!_.isObject(node.beforeValue) && !_.isObject(node.afterValue)) {
+        return acc.concat(`${space.repeat(ind)}- ${node.key}: ${node.beforeValue}\n${space.repeat(ind)}+ ${node.key}: ${node.afterValue}\n`);
       }
 
-      if (!_.isObject(e.beforeValue) && _.isObject(e.afterValue)) {
-        return acc.concat(`${space.repeat(ind)}- ${e.key}: ${e.beforeValue}\n${space.repeat(ind)}+ ${e.key}: {\n${printObject(e.afterValue, ind + 4)}${space.repeat(ind)}  }\n`);
+      if (!_.isObject(node.beforeValue) && _.isObject(node.afterValue)) {
+        return acc.concat(`${space.repeat(ind)}- ${node.key}: ${node.beforeValue}\n${space.repeat(ind)}+ ${node.key}: {\n${printObject(node.afterValue, ind + 4)}${space.repeat(ind)}  }\n`);
       }
 
-      if (_.isObject(e.beforeValue) && !_.isObject(e.afterValue)) {
-        return acc.concat(`${space.repeat(ind)}- ${e.key}: {\n${printObject(e.beforeValue, ind + 4)}${space.repeat(ind)}  }\n${space.repeat(ind)}+ ${e.key}: ${e.afterValue}\n`);
+      if (_.isObject(node.beforeValue) && !_.isObject(node.afterValue)) {
+        return acc.concat(`${space.repeat(ind)}- ${node.key}: {\n${printObject(node.beforeValue, ind + 4)}${space.repeat(ind)}  }\n${space.repeat(ind)}+ ${node.key}: ${node.afterValue}\n`);
       }
     }
-    if (e.type === 'nested') {
-      return acc.concat(`${space.repeat(ind)}  ${e.key}: {\n${stylish(e.children[0], ind + 4)}${space.repeat(ind)}  }\n`);
+    if (node.type === 'nested') {
+      return acc.concat(`${space.repeat(ind)}  ${node.key}: {\n${stylish(node.children[0], ind + 4)}${space.repeat(ind)}  }\n`);
     }
     return acc;
   }, '');
