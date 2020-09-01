@@ -12,7 +12,7 @@ const stylish = (diff, ind) => {
     const space = ' ';
     return space.repeat(ind);
   };
-  return diff.reduce((acc, e) => {
+  const result = diff.reduce((acc, e) => {
     if (e.type === 'removed') {
       if (_.isObject(e.value)) {
         return acc.concat(`${indent()}- ${e.key}: {\n${printObject(e.value, ind + 4)}${indent()}  }\n`);
@@ -53,6 +53,9 @@ const stylish = (diff, ind) => {
     }
     return acc;
   }, '');
+  return result;
 };
 
-export default stylish;
+const wrapResult = (diff) => `{\n${stylish(diff, 2)}}`;
+
+export default wrapResult;

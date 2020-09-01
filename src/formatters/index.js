@@ -3,7 +3,7 @@ import plain from './plain.js';
 import json from './json.js';
 
 const types = {
-  stylish: (diff) => `{\n${stylish(diff, 2)}}`,
+  stylish: (diff) => stylish(diff),
   plain: (diff) => plain(diff).trim(),
   json: (diff) => json(diff).trim(),
 };

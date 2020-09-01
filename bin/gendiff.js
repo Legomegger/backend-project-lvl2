@@ -7,7 +7,6 @@ import main from '../index.js';
 const { program } = pkg;
 
 const relativePath = (filepath) => !filepath.includes(path.resolve());
-// const getFileName = (filepath) => filepath.split('/')[filepath.split('/').length - 1];
 
 const normalizePath = (filepath) => {
   if (relativePath(filepath)) {
