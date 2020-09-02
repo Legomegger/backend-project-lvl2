@@ -3,59 +3,41 @@ import _ from 'lodash';
 const space = ' ';
 
 const printObject = (object, indentation = 2) => {
-  const spacer = ' ';
   const entries = Object.entries(object);
   return entries.reduce((acc, [key, value]) => {
     if (_.isObject(value)) {
-      return acc.concat(`${spacer.repeat(indentation + 2)}${key}: {\n${printObject(value, indentation + 4)}${spacer.repeat(indentation + 2)}}\n`);
+      return acc.concat(`${space.repeat(indentation + 2)}${key}: {\n${printObject(value, indentation + 8)}${space.repeat(indentation + 4)}}\n`);
     }
-    return acc.concat(`${spacer.repeat(indentation + 2)}${key}: ${value}\n`);
+    return acc.concat(`${space.repeat(indentation + 2)}${key}: ${value}\n`);
   }, '');
 };
 
-const displayResult = (node, indentation, symbol) => {
-  if (_.isObject(node.value)) {
-    return `${space.repeat(indentation)}${symbol} ${node.key}: {\n${printObject(node.value, indentation + 4)}${space.repeat(indentation)}  }\n`;
+const renderValue = (value, indentation) => {
+  if (_.isObject(value)) {
+    return `{\n${space.repeat(indentation + 2)}${printObject(value, indentation)}${space.repeat(indentation + 2)} }`;
   }
-  return `${space.repeat(indentation)}${symbol} ${node.key}: ${node.value}\n`;
+  return value;
 };
 
 const stylish = (diff) => {
-  const iter = (diffObject, ind) => diffObject.reduce((acc, node) => {
+  const iter = (diffObject, indentation) => diffObject.map((node) => {
     if (node.type === 'removed') {
-      return acc.concat(displayResult(node, ind, '-'));
+      return `${space.repeat(indentation)} - ${node.key}: ${renderValue(node.value, indentation)}`;
     }
     if (node.type === 'added') {
-      return acc.concat(displayResult(node, ind, '+'));
+      return `${space.repeat(indentation)} + ${node.key}: ${renderValue(node.value, indentation)}`;
     }
     if (node.type === 'unchanged') {
-      return acc.concat(displayResult(node, ind, ' '));
+      return `${space.repeat(indentation)}  ${node.key}: ${renderValue(node.value, indentation)}`;
     }
     if (node.type === 'changed') {
-      if (_.isObject(node.beforeValue) && _.isObject(node.afterValue)) {
-        return acc.concat(`${space.repeat(ind)}- ${node.key}: {\n${printObject(node.beforeValue, ind + 4)}}\n${space.repeat(ind)}+ ${node.key}: {\n${printObject(node.afterValue, ind + 4)}}\n`);
-      }
-
-      if (!_.isObject(node.beforeValue) && !_.isObject(node.afterValue)) {
-        return acc.concat(`${space.repeat(ind)}- ${node.key}: ${node.beforeValue}\n${space.repeat(ind)}+ ${node.key}: ${node.afterValue}\n`);
-      }
-
-      if (!_.isObject(node.beforeValue) && _.isObject(node.afterValue)) {
-        return acc.concat(`${space.repeat(ind)}- ${node.key}: ${node.beforeValue}\n${space.repeat(ind)}+ ${node.key}: {\n${printObject(node.afterValue, ind + 4)}${space.repeat(ind)}  }\n`);
-      }
-
-      if (_.isObject(node.beforeValue) && !_.isObject(node.afterValue)) {
-        return acc.concat(`${space.repeat(ind)}- ${node.key}: {\n${printObject(node.beforeValue, ind + 4)}${space.repeat(ind)}  }\n${space.repeat(ind)}+ ${node.key}: ${node.afterValue}\n`);
-      }
+      return `${space.repeat(indentation)} - ${node.key}: ${renderValue(node.beforeValue, indentation)}\n ${space.repeat(indentation)} + ${node.key}: ${renderValue(node.afterValue, indentation)}`;
     }
-    if (node.type === 'nested') {
-      return acc.concat(`${space.repeat(ind)}  ${node.key}: {\n${iter(node.children, ind + 4)}${space.repeat(ind)}  }\n`);
-    }
-    return acc;
-  }, '');
+    return `${space.repeat(indentation)}   ${node.key}: {\n ${iter(node.children, indentation + 2).join('\n')}${space.repeat(indentation + 2)}\n}`;
+  });
   return iter(diff, 2);
 };
 
-const wrapResult = (diff) => `{\n${stylish(diff, 2)}}`;
+const wrapResult = (diff) => console.log(stylish(diff)[0]);
 
 export default wrapResult;
