@@ -1,36 +1,28 @@
 import _ from 'lodash';
 
-const makeDiff = (objectA, objectB) => {
-  const processKeys = (uniqKeys, fileAKeys, fileBKeys) => {
-    const reduced = uniqKeys.reduce((acc, key) => {
-      if (fileAKeys.includes(key) && !fileBKeys.includes(key)) {
-        return [...acc, { type: 'removed', key, value: objectA[key] }];
-      }
-      if (!fileAKeys.includes(key) && fileBKeys.includes(key)) {
-        return [...acc, { type: 'added', key, value: objectB[key] }];
-      }
-      if (objectA[key] === objectB[key]) {
-        return [...acc, { type: 'unchanged', key, value: objectA[key] }];
-      }
-      if (!_.isObject(objectA[key]) || !_.isObject(objectB[key])) {
-        if (objectA[key] !== objectB[key]) {
-          return [...acc, {
-            type: 'changed', key, beforeValue: objectA[key], afterValue: objectB[key],
-          }];
-        }
-      }
-      if (_.isObject(objectA[key]) && _.isObject(objectB[key])) {
-        return [...acc, { type: 'nested', key, children: [makeDiff(objectA[key], objectB[key])] }];
-      }
-      return acc;
-    }, []);
-    return reduced;
-  };
-  const fileAKeys = Object.keys(objectA);
-  const fileBKeys = Object.keys(objectB);
+const makeDiff = (object1, object2) => {
+  const file1Keys = Object.keys(object1);
+  const file2Keys = Object.keys(object2);
 
-  const keys = _.union(fileAKeys, fileBKeys);
+  const keys = _.union(file1Keys, file2Keys);
 
-  return processKeys(keys, fileAKeys, fileBKeys);
+  const mapped = keys.map((key) => {
+    if (!_.has(object2, key)) {
+      return { type: 'removed', key, value: object1[key] };
+    }
+    if (!_.has(object1, key)) {
+      return { type: 'added', key, value: object2[key] };
+    }
+    if (object1[key] === object2[key]) {
+      return { type: 'unchanged', key, value: object1[key] };
+    }
+    if (_.isObject(object1[key]) && _.isObject(object2[key])) {
+      return { type: 'nested', key, children: makeDiff(object1[key], object2[key]) };
+    }
+    return {
+      type: 'changed', key, beforeValue: object1[key], afterValue: object2[key],
+    };
+  });
+  return mapped;
 };
 export default makeDiff;

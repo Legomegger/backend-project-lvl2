@@ -32,7 +32,7 @@ const plain = (diff) => {
       }
     }
     if (node.type === 'nested') {
-      return acc.concat(iter(node.children[0], [...ancestors, node.key]));
+      return acc.concat(iter(node.children, [...ancestors, node.key]));
     }
     return acc;
   }, '');

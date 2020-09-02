@@ -2,7 +2,8 @@ import _ from 'lodash';
 
 const space = ' ';
 
-const printObject = (object, indentation = 2, spacer = ' ') => {
+const printObject = (object, indentation = 2) => {
+  const spacer = ' ';
   const entries = Object.entries(object);
   return entries.reduce((acc, [key, value]) => {
     if (_.isObject(value)) {
@@ -19,8 +20,8 @@ const displayResult = (node, indentation, symbol) => {
   return `${space.repeat(indentation)}${symbol} ${node.key}: ${node.value}\n`;
 };
 
-const stylish = (diff, ind) => {
-  const result = diff.reduce((acc, node) => {
+const stylish = (diff) => {
+  const iter = (diffObject, ind) => diffObject.reduce((acc, node) => {
     if (node.type === 'removed') {
       return acc.concat(displayResult(node, ind, '-'));
     }
@@ -48,11 +49,11 @@ const stylish = (diff, ind) => {
       }
     }
     if (node.type === 'nested') {
-      return acc.concat(`${space.repeat(ind)}  ${node.key}: {\n${stylish(node.children[0], ind + 4)}${space.repeat(ind)}  }\n`);
+      return acc.concat(`${space.repeat(ind)}  ${node.key}: {\n${iter(node.children, ind + 4)}${space.repeat(ind)}  }\n`);
     }
     return acc;
   }, '');
-  return result;
+  return iter(diff, 2);
 };
 
 const wrapResult = (diff) => `{\n${stylish(diff, 2)}}`;
