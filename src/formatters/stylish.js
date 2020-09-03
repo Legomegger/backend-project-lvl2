@@ -35,8 +35,7 @@ const stylish = (diff) => {
     }
     return `${space.repeat(indentation)}  ${node.key}: {\n${iter(node.children, indentation + 4).join('\n')}\n${space.repeat(indentation + 2)}}`;
   });
-  const result = iter(diff, 2);
-  return `{\n${result.join('\n')}\n}`;
+  return `{\n${iter(diff, 2).join('\n')}\n}`;
 };
 
 export default stylish;

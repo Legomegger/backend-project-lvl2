@@ -9,16 +9,7 @@ let resultStylish;
 let resultPlain;
 let resultJson;
 
-const formats = ['stylish', 'plain', 'json'];
-
-const resultPicker = (format) => {
-  const dict = {
-    stylish: resultStylish,
-    plain: resultPlain,
-    json: resultJson,
-  };
-  return dict[format];
-};
+const extensions = ['yml', 'ini', 'json'];
 
 beforeAll(() => {
   const dirname = path.resolve();
@@ -27,28 +18,23 @@ beforeAll(() => {
   resultJson = fs.readFileSync(path.join(dirname, './__tests__/__fixtures__/json.txt'), 'utf-8').trim();
 });
 
-describe('test json files', () => {
-  test.each(formats)('testing %p format', (format) => {
-    const dirname = path.resolve();
-    const before = path.join(dirname, './__tests__/__fixtures__/before.json');
-    const after = path.join(dirname, './__tests__/__fixtures__/after.json');
-    expect(gendiff(before, after, format)).toBe(resultPicker(format));
+extensions.forEach((extension) => {
+  const dirname = path.resolve();
+  const before = path.join(dirname, `./__tests__/__fixtures__/before.${extension}`);
+  const after = path.join(dirname, `./__tests__/__fixtures__/after.${extension}`);
+  describe('test stylish', () => {
+    test(`${extension} stylish`, () => {
+      expect(gendiff(before, after, 'stylish')).toBe(resultStylish);
+    });
   });
-});
-
-describe('test yml files', () => {
-  test.each(formats)('testing %p format', (format) => {
-    const dirname = path.resolve();
-    const before = path.join(dirname, './__tests__/__fixtures__/before.yml');
-    const after = path.join(dirname, './__tests__/__fixtures__/after.yml');
-    expect(gendiff(before, after, format)).toBe(resultPicker(format));
+  describe('test plain', () => {
+    test(`${extension} plain`, () => {
+      expect(gendiff(before, after, 'plain')).toBe(resultPlain);
+    });
   });
-});
-describe('test ini files', () => {
-  test.each(formats)('testing %p format', (format) => {
-    const dirname = path.resolve();
-    const before = path.join(dirname, './__tests__/__fixtures__/before.ini');
-    const after = path.join(dirname, './__tests__/__fixtures__/after.ini');
-    expect(gendiff(before, after, format)).toBe(resultPicker(format));
+  describe('test json', () => {
+    test(`${extension} json`, () => {
+      expect(gendiff(before, after, 'json')).toBe(resultJson);
+    });
   });
 });

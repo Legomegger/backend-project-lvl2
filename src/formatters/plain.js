@@ -1,6 +1,9 @@
 import _ from 'lodash';
 
 const printValue = (value) => {
+  if (_.isObject(value)) {
+    return '[complex value]';
+  }
   if (typeof value === 'string') {
     return `'${value}'`;
   }
@@ -8,35 +11,23 @@ const printValue = (value) => {
 };
 
 const plain = (diff) => {
-  const iter = (diffObject, ancestors) => diffObject.reduce((acc, node) => {
+  const iter = (diffObject, ancestors) => diffObject.flatMap((node) => {
     const keys = [...ancestors, node.key];
     if (node.type === 'removed') {
-      return acc.concat(`Property '${keys.join('.')}' was removed\n`);
+      return `Property '${keys.join('.')}' was removed`;
     }
     if (node.type === 'added') {
-      if (_.isObject(node.value)) {
-        return acc.concat(`Property '${keys.join('.')}' was added with value: [complex value]\n`);
-      }
-      return acc.concat(`Property '${keys.join('.')}' was added with value: ${printValue(node.value)}\n`);
+      return `Property '${keys.join('.')}' was added with value: ${printValue(node.value)}`;
     }
-
+    if (node.type === 'unchanged') {
+      return null;
+    }
     if (node.type === 'changed') {
-      if (_.isObject(node.beforeValue)) {
-        return acc.concat(`Property '${keys.join('.')}' was updated. From [complex value] to ${printValue(node.afterValue)}\n`);
-      }
-      if (_.isObject(node.afterValue)) {
-        return acc.concat(`Property '${keys.join('.')}' was updated. From ${printValue(node.beforeValue)} to [complex value]\n`);
-      }
-      if (!_.isObject(node.beforeValue) && !_.isObject(node.afterValue)) {
-        return acc.concat(`Property '${keys.join('.')}' was updated. From ${printValue(node.beforeValue)} to ${printValue(node.afterValue)}\n`);
-      }
+      return `Property '${keys.join('.')}' was updated. From ${printValue(node.beforeValue)} to ${printValue(node.afterValue)}`;
     }
-    if (node.type === 'nested') {
-      return acc.concat(iter(node.children, [...ancestors, node.key]));
-    }
-    return acc;
-  }, '');
-  return iter(diff, []);
+    return iter(node.children, [...ancestors, node.key]);
+  });
+  return iter(diff, []).filter((e) => e).join('\n').trim();
 };
 
 export default plain;
