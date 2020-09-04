@@ -8,14 +8,7 @@ const getFileContent = (filepath) => fs.readFileSync(filepath, 'utf-8');
 
 const getFileFormat = (filename) => path.extname(filename).split('.')[1];
 
-const relativePath = (filepath) => !filepath.includes(process.cwd());
-
-const normalizePath = (filepath) => {
-  if (relativePath(filepath)) {
-    return `${process.cwd()}/${filepath}`;
-  }
-  return filepath;
-};
+const normalizePath = (filepath) => path.resolve(process.cwd(), filepath);
 
 export default (filepath1, filepath2, formatName) => {
   const correctFilePath1 = normalizePath(filepath1);

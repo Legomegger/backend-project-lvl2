@@ -5,8 +5,11 @@ const space = ' ';
 const renderValue = (value, indentation) => {
   if (_.isObject(value)) {
     const entries = Object.entries(value);
-    const reduced = entries.reduce((acc, [key, val]) => acc.concat(`${space.repeat(indentation + 6)}${key}: ${renderValue(val, indentation + 4)}\n`), '');
-    return `{\n${reduced}${space.repeat(indentation + 2)}}`;
+    const mapped = entries.map(([key, val]) => {
+      const line = `${space.repeat(indentation + 6)}${key}: ${renderValue(val, indentation + 4)}`;
+      return line;
+    });
+    return `{\n${mapped.join('\n')}\n${space.repeat(indentation + 2)}}`;
   }
   return value;
 };
