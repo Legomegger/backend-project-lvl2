@@ -2,19 +2,11 @@ import _ from 'lodash';
 
 const space = ' ';
 
-const printObject = (object, indentation = 2) => {
-  const entries = Object.entries(object);
-  return entries.reduce((acc, [key, value]) => {
-    if (_.isObject(value)) {
-      return acc.concat(`${space.repeat(indentation + 6)}${key}: {\n${printObject(value, indentation + 4)}${space.repeat(indentation + 6)}}\n`);
-    }
-    return acc.concat(`${space.repeat(indentation + 6)}${key}: ${value}\n`);
-  }, '');
-};
-
 const renderValue = (value, indentation) => {
   if (_.isObject(value)) {
-    return `{\n${printObject(value, indentation)}${space.repeat(indentation + 2)}}`;
+    const entries = Object.entries(value);
+    const reduced = entries.reduce((acc, [key, val]) => acc.concat(`${space.repeat(indentation + 6)}${key}: ${renderValue(val, indentation + 4)}\n`), '');
+    return `{\n${reduced}${space.repeat(indentation + 2)}}`;
   }
   return value;
 };

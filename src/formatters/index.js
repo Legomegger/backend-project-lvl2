@@ -8,6 +8,4 @@ const types = {
   json: (diff) => json(diff).trim(),
 };
 
-const format = (diff, type) => types[type](diff);
-
-export default format;
+export default (diff, type) => types[type](diff);
