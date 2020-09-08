@@ -11,11 +11,15 @@ let resultJson;
 
 const extensions = ['yml', 'ini', 'json'];
 
-beforeAll(() => {
+const getFixturePath = (filename) => {
   const dirname = path.resolve();
-  resultStylish = fs.readFileSync(path.join(dirname, './__tests__/__fixtures__/stylish.txt'), 'utf-8').trim();
-  resultPlain = fs.readFileSync(path.join(dirname, './__tests__/__fixtures__/plain.txt'), 'utf-8').trim();
-  resultJson = fs.readFileSync(path.join(dirname, './__tests__/__fixtures__/json.txt'), 'utf-8').trim();
+  return path.join(dirname, '.', '__tests__', '__fixtures__', filename);
+};
+
+beforeAll(() => {
+  resultStylish = fs.readFileSync(getFixturePath('stylish.txt'), 'utf-8').trim();
+  resultPlain = fs.readFileSync(getFixturePath('plain.txt'), 'utf-8').trim();
+  resultJson = fs.readFileSync(getFixturePath('json.txt'), 'utf-8').trim();
 });
 
 extensions.forEach((extension) => {

@@ -13,19 +13,18 @@ const printValue = (value) => {
 const plain = (diff) => {
   const iter = (diffObject, ancestors) => diffObject.flatMap((node) => {
     const keys = [...ancestors, node.key];
-    if (node.type === 'removed') {
-      return `Property '${keys.join('.')}' was removed`;
+    switch (node.type) {
+      case 'removed':
+        return `Property '${keys.join('.')}' was removed`;
+      case 'added':
+        return `Property '${keys.join('.')}' was added with value: ${printValue(node.value)}`;
+      case 'unchanged':
+        return null;
+      case 'changed':
+        return `Property '${keys.join('.')}' was updated. From ${printValue(node.beforeValue)} to ${printValue(node.afterValue)}`;
+      default:
+        return iter(node.children, [...ancestors, node.key]);
     }
-    if (node.type === 'added') {
-      return `Property '${keys.join('.')}' was added with value: ${printValue(node.value)}`;
-    }
-    if (node.type === 'unchanged') {
-      return null;
-    }
-    if (node.type === 'changed') {
-      return `Property '${keys.join('.')}' was updated. From ${printValue(node.beforeValue)} to ${printValue(node.afterValue)}`;
-    }
-    return iter(node.children, [...ancestors, node.key]);
   });
   return iter(diff, []).filter((e) => e).join('\n').trim();
 };
