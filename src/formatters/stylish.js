@@ -2,6 +2,8 @@ import _ from 'lodash';
 
 const space = ' ';
 
+const getIndent = (depth, by = 0) => depth + by;
+
 const renderValue = (value, indentation) => {
   if (!_.isObject(value)) {
     return value;
@@ -15,18 +17,18 @@ const renderValue = (value, indentation) => {
 };
 
 const stylish = (diff) => {
-  const iter = (diffObject, indentation) => diffObject.map((node) => {
+  const iter = (diffObject, depth) => diffObject.map((node) => {
     switch (node.type) {
       case 'removed':
-        return `${space.repeat(indentation)}- ${node.key}: ${renderValue(node.value, indentation)}`;
+        return `${space.repeat(getIndent(depth))}- ${node.key}: ${renderValue(node.value, getIndent(depth))}`;
       case 'added':
-        return `${space.repeat(indentation)}+ ${node.key}: ${renderValue(node.value, indentation)}`;
+        return `${space.repeat(getIndent(depth))}+ ${node.key}: ${renderValue(node.value, getIndent(depth))}`;
       case 'unchanged':
-        return `${space.repeat(indentation)}  ${node.key}: ${renderValue(node.value, indentation)}`;
+        return `${space.repeat(getIndent(depth))}  ${node.key}: ${renderValue(node.value, getIndent(depth))}`;
       case 'changed':
-        return `${space.repeat(indentation)}- ${node.key}: ${renderValue(node.beforeValue, indentation)}\n${space.repeat(indentation)}+ ${node.key}: ${renderValue(node.afterValue, indentation)}`;
+        return `${space.repeat(getIndent(depth))}- ${node.key}: ${renderValue(node.beforeValue, getIndent(depth))}\n${space.repeat(getIndent(depth))}+ ${node.key}: ${renderValue(node.afterValue, getIndent(depth))}`;
       default:
-        return `${space.repeat(indentation)}  ${node.key}: {\n${iter(node.children, indentation + 4).join('\n')}\n${space.repeat(indentation + 2)}}`;
+        return `${space.repeat(getIndent(depth))}  ${node.key}: {\n${iter(node.children, depth + 4).join('\n')}\n${space.repeat(getIndent(depth + 2))}}`;
     }
   });
   return `{\n${iter(diff, 2).join('\n')}\n}`;
