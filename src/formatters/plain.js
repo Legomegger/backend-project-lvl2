@@ -25,7 +25,7 @@ const plain = (diff) => {
       case 'nested':
         return iter(node.children, [...ancestors, node.key]);
       default:
-        throw new Error('Unknown node type');
+        throw new Error(`Unknown node type ${node.type}`);
     }
   });
   return iter(diff, []).filter((e) => e).join('\n').trim();
