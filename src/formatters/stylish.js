@@ -27,8 +27,10 @@ const stylish = (diff) => {
         return `${getIndent(depth)}  ${node.key}: ${renderValue(node.value, depth)}`;
       case 'changed':
         return `${getIndent(depth)}- ${node.key}: ${renderValue(node.beforeValue, depth)}\n${getIndent(depth)}+ ${node.key}: ${renderValue(node.afterValue, depth)}`;
-      default:
+      case 'nested':
         return `${getIndent(depth)}  ${node.key}: {\n${iter(node.children, depth + 4).join('\n')}\n${getIndent(depth + 2)}}`;
+      default:
+        throw new Error('Unknown node type');
     }
   });
   return `{\n${iter(diff, 2).join('\n')}\n}`;

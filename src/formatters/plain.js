@@ -22,8 +22,10 @@ const plain = (diff) => {
         return null;
       case 'changed':
         return `Property '${keys.join('.')}' was updated. From ${printValue(node.beforeValue)} to ${printValue(node.afterValue)}`;
-      default:
+      case 'nested':
         return iter(node.children, [...ancestors, node.key]);
+      default:
+        throw new Error('Unknown node type');
     }
   });
   return iter(diff, []).filter((e) => e).join('\n').trim();
